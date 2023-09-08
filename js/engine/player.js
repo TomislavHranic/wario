@@ -1,6 +1,6 @@
 import { wario } from "../characters/wario.js";
 import { drawSprite } from "./draw.js";
-import { StandingLeft, StandingRight, CrouchingLeft, CrouchingRight } from "./state.js";
+import { StandingLeft, StandingRight, CrouchingLeft, CrouchingRight, JumpingLeft, JumpingRight, FallingLeft, FallingRight, CrawlingLeft, CrawlingRight, RunningLeft, RunningRight } from "./state.js";
 
 export default class Player {
   constructor( game )  {
@@ -11,48 +11,52 @@ export default class Player {
       new StandingRight( this ),
       new CrouchingLeft( this ),
       new CrouchingRight( this ),
+      new JumpingLeft( this ),
+      new JumpingRight( this ),
+      new FallingLeft( this ),
+      new FallingRight( this ),
+      new CrawlingLeft( this ),
+      new CrawlingRight( this ),
+      new RunningLeft( this ),
+      new RunningRight( this ),
     ];
     this.currentState = this.states[1];
     this.stateSpriteData = this.character.normal.standing;
     this.x = 0;
     this.y = 10;
-    this.frame = 0;
     this.left = false;
     this.xSpeed = 0;
-    this.maxXSpeed = 3;
+    this.maxXSpeed = 2;
     this.ySpeed = 0;
     this.maxYSpeed = 15;
-    this.jumpSpeed = 7;
+    this.jumpSpeed = 9;
     this.maxJumpSpeed = 9;
     this.lastY = 0;
     this.lastGround = this.game.height - this.character.height;
   }
 
   setState( state ) {
+    this.maxXSpeed = 2;
     this.currentState = this.states[state];
     this.currentState.enter();
   }
 
   update( inputKeys ) {
     this.currentState.handleInput( inputKeys );
+    this.currentState.update();
     // horizontal movement
-    // if ( inputKeys.includes( 'ArrowRight' ) ) {
-    //   this.left = false;
-    //   this.xSpeed = this.maxXSpeed;
-    // } else if ( inputKeys.includes( 'ArrowLeft' ) ) {
-    //   this.left = true;
-    //   this.xSpeed = - this.maxXSpeed;
-    // } else this.xSpeed = 0;
+    if ( inputKeys.includes( 'ArrowRight' ) ) {
+      this.left = false;
+      this.xSpeed = this.maxXSpeed;
+    } else if ( inputKeys.includes( 'ArrowLeft' ) ) {
+      this.left = true;
+      this.xSpeed = - this.maxXSpeed;
+    } else this.xSpeed = 0;
 
-    // this.x += this.xSpeed;
+    this.x += this.xSpeed;
 
     // vertical movement
     if ( this.ySpeed > this.maxYSpeed) this.ySpeed = this.maxYSpeed;
-
-    if ( inputKeys.includes( 'ArrowUp' ) && ( this.lastGround === this.y || this.lastGround === this.lastY ) && this.ySpeed > - this.maxJumpSpeed ) {
-      this.ySpeed -= this.jumpSpeed;
-      if ( this.ySpeed < - this.maxJumpSpeed ) this.ySpeed = - this.maxJumpSpeed;
-    }
 
     this.lastY = this.y;
 
@@ -70,7 +74,7 @@ export default class Player {
   }
 
   draw( ctx ) {
-    drawSprite( ctx, this.stateSpriteData.frames[ this.frame ], this.x, this.y + this.stateSpriteData.topOffset, this.character.width, this.character.height, this.left );
+    drawSprite( ctx, this.stateSpriteData.sprites[ this.stateSpriteData.animation[ this.currentState.animationFrame ] ], this.x, this.y + this.stateSpriteData.topOffset, this.character.width, this.character.height, this.left );
   }
 
   groundLevel() {
@@ -78,9 +82,9 @@ export default class Player {
 
     // find level block columns
     const levelColumns = [
-      Math.floor( ( this.x + 2 ) / this.game.level.blockW ),
+      Math.floor( ( this.x + 5 ) / this.game.level.blockW ),
       Math.floor( ( this.x + this.character.width / 2 ) / this.game.level.blockW ),
-      Math.floor( ( this.x + this.character.width - 2 ) / this.game.level.blockW ),
+      Math.floor( ( this.x + this.character.width - 5 ) / this.game.level.blockW ),
     ];
 
     const baseGround = this.game.height - this.character.height
