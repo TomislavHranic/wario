@@ -1,12 +1,17 @@
 import { wario } from "../characters/wario.js";
 import { drawSprite } from "./draw.js";
-import { StandingLeft, StandingRight } from "./state.js";
+import { StandingLeft, StandingRight, CrouchingLeft, CrouchingRight } from "./state.js";
 
 export default class Player {
   constructor( game )  {
     this.game = game;
     this.character = wario;
-    this.states = [ new StandingLeft( this ), new StandingRight( this ) ];
+    this.states = [
+      new StandingLeft( this ),
+      new StandingRight( this ),
+      new CrouchingLeft( this ),
+      new CrouchingRight( this ),
+    ];
     this.currentState = this.states[1];
     this.stateSpriteData = this.character.normal.standing;
     this.x = 0;
@@ -57,7 +62,7 @@ export default class Player {
     this.groundLevel();
 
     if ( this.y < this.lastGround ) {
-      this.ySpeed++;
+      this.ySpeed += this.game.gravity;
     } else if ( this.ySpeed !== 0 ) {
       this.ySpeed = 0;
       this.y = this.lastGround;

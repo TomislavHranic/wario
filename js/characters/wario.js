@@ -82,7 +82,7 @@ export const wario = {
         ],
       ],
     },
-    'jump': {
+    'jumping': {
       name: 'jump',
       frameCount: 1,
       topOffset: 2,
@@ -121,7 +121,7 @@ export const wario = {
         ],
       ],
     },
-    'crouch': {
+    'crouching': {
       name: 'crouch',
       frameCount: 2,
       topOffset: 10,

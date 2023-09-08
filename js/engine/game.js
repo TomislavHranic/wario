@@ -6,6 +6,7 @@ export default class Game {
   constructor( width, height ) {
     this.width = width;
     this.height = height;
+    this.gravity = 1;
     this.player = new Player( this );
     this.input = new InputHandler();
     this.level = new Level( this );
