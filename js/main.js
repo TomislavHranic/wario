@@ -11,6 +11,12 @@ canvas.width = Math.floor(240*16/9);
 const game = new Game( canvas.width, canvas.height );
 const fps = 25;
 
+function drawStatus( ctx, inputKeys ) {
+  ctx.font = '10px Helvetica';
+  ctx.fillText( 'Inputs: ' + inputKeys, 10, 15 );
+  ctx.fillText( 'State: ' + game.player.currentState.state, 10, 27 );
+}
+
 setInterval( gameUpdate, 1000 / fps);
 
 function gameUpdate() {
@@ -20,6 +26,7 @@ function gameUpdate() {
 function animate() {
   ctx.clearRect( 0, 0, canvas.width, canvas.height );
   game.draw( ctx );
+  drawStatus( ctx, game.input.keys );
 
   requestAnimationFrame(animate);
 }

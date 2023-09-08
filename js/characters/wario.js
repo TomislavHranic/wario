@@ -3,6 +3,7 @@ export const wario = {
   'height': 32,
   'normal': {
     'standing': {
+      name: 'standing',
       frameCount: 1,
       topOffset: 1,
       frames: [
@@ -42,6 +43,7 @@ export const wario = {
       ],
     },
     'blink': {
+      name: 'blink',
       frameCount: 1,
       topOffset: 1,
       frames: [
@@ -81,6 +83,7 @@ export const wario = {
       ],
     },
     'jump': {
+      name: 'jump',
       frameCount: 1,
       topOffset: 2,
       frames: [
@@ -119,6 +122,7 @@ export const wario = {
       ],
     },
     'crouch': {
+      name: 'crouch',
       frameCount: 2,
       topOffset: 10,
       frames: [

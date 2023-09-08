@@ -1,5 +1,6 @@
 import Player from "./player.js";
 import InputHandler from "./input.js";
+import { Level } from "./levels.js";
 
 export default class Game {
   constructor( width, height ) {
@@ -7,6 +8,7 @@ export default class Game {
     this.height = height;
     this.player = new Player( this );
     this.input = new InputHandler();
+    this.level = new Level( this );
   }
 
   update() {
@@ -14,6 +16,7 @@ export default class Game {
   }
 
   draw( ctx ) {
+    this.level.draw( ctx );
     this.player.draw( ctx );
   }
 }
