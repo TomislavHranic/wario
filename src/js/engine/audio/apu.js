@@ -1,4 +1,4 @@
-import { pulse } from "./channels.js";
+import { pulse } from "./noteGen.js";
 
 // Audio Processing Unit
-let note = pulse(440);
+let pulse = pulse(440);

@@ -123,7 +123,7 @@ export const testTune = {
     [ f.c5, 2 ],
     [ f.c5, 2 ],
     [ f.h4, 2 ],
-    [ f.a4, 124 ],
+    [ f.a4, 2 ],
   ],
   kck: [
     [ 0, 12 ],

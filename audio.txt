@@ -1,0 +1,16 @@
+sequencer -> noteGenerator -> pulseGenerator
+
+sequencerTrack [
+  input: tuneTrack;
+
+  for each tuneTrackNote
+    pcmBuffer = generate tuneTrackNote
+
+    create, connect and start buffer source with pcmBuffer
+]
+
+noteGenerator [
+  input: note(freq, duration)
+
+  output: pcmBuffer
+]
