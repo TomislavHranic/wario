@@ -74,7 +74,7 @@ export default class Player {
   }
 
   draw( ctx ) {
-    drawSprite( ctx, this.stateSpriteData.sprites[ this.stateSpriteData.animation[ this.currentState.animationFrame ] ], this.x, this.y + this.stateSpriteData.topOffset, this.character.width, this.character.height, this.left );
+    drawSprite( ctx, this.stateSpriteData.sprites[ this.stateSpriteData.animation[ this.currentState.animationFrame ] ], this.x, this.y + this.stateSpriteData.topOffset[ this.currentState.animationFrame ], this.character.width, this.character.height, this.left );
   }
 
   groundLevel() {

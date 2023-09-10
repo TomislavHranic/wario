@@ -1,7 +1,8 @@
 import Game from "./engine/game.js";
-import { wario } from "./characters/wario.js";
-import { drawSprite } from "./engine/draw.js";
+import Sequencer from "./engine/audio/sequencer.js";
+import { testTune } from "./engine/audio/tunes/test.js";
 
+const start = document.getElementById('start');
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d', { willReadFrequently: true } );
 
@@ -11,24 +12,33 @@ canvas.width = Math.floor(240*16/9);
 const game = new Game( canvas.width, canvas.height );
 const fps = 25;
 
-function drawStatus( ctx, inputKeys ) {
-  ctx.font = '10px Helvetica';
-  ctx.fillText( 'Inputs: ' + inputKeys, 10, 15 );
-  ctx.fillText( 'State: ' + game.player.currentState.state, 10, 27 );
-}
+const sequencer = new Sequencer( testTune );
 
-setInterval( gameUpdate, 1000 / fps);
+sequencer.loadTune();
 
-function gameUpdate() {
-  game.update();
-}
+start.addEventListener( 'click', () => {
+  start.style.display = 'none';
+  sequencer.resume();
+  function drawStatus( ctx, inputKeys ) {
+    ctx.font = '10px Helvetica';
+    ctx.fillText( 'Inputs: ' + inputKeys, 10, 15 );
+    ctx.fillText( 'State: ' + game.player.currentState.state, 10, 27 );
+  }
 
-function animate() {
-  ctx.clearRect( 0, 0, canvas.width, canvas.height );
-  game.draw( ctx );
-  drawStatus( ctx, game.input.keys );
+  setInterval( timing, 1000 / fps);
 
-  requestAnimationFrame(animate);
-}
+  function timing() {
+    game.update();
+  }
 
-animate();
+  function animate() {
+    sequencer.update();
+    ctx.clearRect( 0, 0, canvas.width, canvas.height );
+    game.draw( ctx );
+    drawStatus( ctx, game.input.keys );
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+});

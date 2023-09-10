@@ -256,6 +256,7 @@ export class RunningRight extends State {
   handleInput( inputKeys ) {
     if ( this.player.ySpeed > 0 ) this.player.setState( states.FALLING_RIGHT );
     if ( ! inputKeys.includes( 'ArrowRight' ) ) this.player.setState( states.STANDING_RIGHT );
+    if ( inputKeys.includes( 'ArrowDown' ) ) this.player.setState( states.CROUCHING_RIGHT );
     if ( inputKeys.includes( 'Space' ) ) this.player.setState( states.JUMP_RIGHT );
   }
 }
@@ -272,6 +273,7 @@ export class RunningLeft extends RunningRight {
   handleInput( inputKeys ) {
     if ( this.player.ySpeed > 0 ) this.player.setState( states.FALLING_LEFT );
     if ( ! inputKeys.includes( 'ArrowLeft' ) ) this.player.setState( states.STANDING_LEFT );
+    if ( inputKeys.includes( 'ArrowDown' ) ) this.player.setState( states.CROUCHING_LEFT );
     if ( inputKeys.includes( 'Space' ) ) this.player.setState( states.JUMP_LEFT );
   }
 }

@@ -9,6 +9,18 @@ export class Level {
   }
 
   draw( ctx ) {
+    let imageData = ctx.getImageData(0, 0, this.game.width-1, this.game.height);
+    let white = true;
+    imageData.data.forEach( (e,i) => {
+      if ( i % 4 === 0 ) {
+        white = !white;
+      }
+
+      if ( white ) imageData.data[i] = 255;
+      else imageData.data[i] = 0;
+    });
+    ctx.putImageData(imageData, 0, 0);
+
     for ( let i = 0; i < this.h; i++ ) {
       for ( let j = 0; j < this.w; j++ ) {
         if ( this.layout[i][j] ) {
