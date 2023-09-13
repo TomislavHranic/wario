@@ -1,7 +1,7 @@
 import { f } from "../freq.js";
 
 export const testTune = {
-  bpm: 155,
+  bpm: 120,
   osc1: [
     [ f.e5, 2 ],
     [ f.e5, 2 ],

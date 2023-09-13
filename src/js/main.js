@@ -19,18 +19,35 @@ sequencer.loadTune();
 start.addEventListener( 'click', () => {
   start.style.display = 'none';
   sequencer.resume();
+
+  // Audio timing
+  function audioBeatScheduler() {
+    while ( sequencer.nextSixteenthNote < sequencer.aCtx.currentTime + 0.1 ) {
+      sequencer.nextSixteenthNote += 0.25 * 60 / sequencer.tune.bpm;
+    }
+
+    sequencer.schedule();
+    console.log(nextSixteenthNote);
+
+    window.setTimeout( audioBeatScheduler, 50.0 );
+  }
+
+  audioBeatScheduler();
+
   function drawStatus( ctx, inputKeys ) {
     ctx.font = '10px Helvetica';
     ctx.fillText( 'Inputs: ' + inputKeys, 10, 15 );
     ctx.fillText( 'State: ' + game.player.currentState.state, 10, 27 );
   }
 
+  // Game update timing
   setInterval( timing, 1000 / fps);
 
   function timing() {
     game.update();
   }
 
+  // Game rendering
   function animate() {
     sequencer.update();
     ctx.clearRect( 0, 0, canvas.width, canvas.height );

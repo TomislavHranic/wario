@@ -1,3 +1,4 @@
+import { LinkedList } from "../linkedList.js";
 import { aCtx } from "./context.js";
 
 
@@ -17,15 +18,42 @@ export default class Sequencer {
     this.trackKck = this.tune.kck;
     this.totalTime = 0;
     this.aCtx = aCtx();
+    this.noteFadeInOut = ( 1 / this.aCtx.sampleRate ) * 50 // 5 samples of fade in and out to prevent popping
     this.osc1 = this.o1();
     this.gain1 = this.aCtx.createGain();
     this.kck = [];
     this.kckGain = [];
+    this.playingSfx = [ 0, 0, 0, 0 ];
+    this.track
+    this.nextSixteenthNote = this.aCtx.currentTime;
+    this.beatIndex = 0; // in sixteenths
+    this.buffers1;
+    this.buffers2;
+    this.buffers3;
+    this.buffers4;
+    this.track1 = this.aCtx.createBufferSource();
+    this.track2 = this.aCtx.createBufferSource();
+    this.track3 = this.aCtx.createBufferSource();
+    this.track4 = this.aCtx.createBufferSource();
+  }
+
+  setup() {
+    buffers1 = new LinkedList();
+    buffers2 = new LinkedList();
+    buffers3 = new LinkedList();
+    buffers4 = new LinkedList();
+    this.track1.connect( this.aCtx.destination );
+    this.track2.connect( this.aCtx.destination );
+    this.track3.connect( this.aCtx.destination );
+    this.track4.connect( this.aCtx.destination );
+  }
+
+  schedule() {
   }
 
   loadTune() {
-    let nextNoteTime = this.aCtx.currentTime;
-    const loadTime = nextNoteTime;
+    let thisNoteTime = this.aCtx.currentTime;
+    const loadTime = thisNoteTime;
     let noteBufferSource = [];
     let p1 = null;
     let noteDuration = 0;
@@ -35,20 +63,22 @@ export default class Sequencer {
       noteDuration = this.deltaTime * this.track1[i][1]
       noteBufferSource.push( this.aCtx.createBufferSource() );
       p1 = pulse();
+      //console.log(p1);
       noteBufferSource[i].buffer = note( this.aCtx, this.track1[i][0], noteDuration, p1 )
-      //this.osc1.frequency.setValueAtTime( this.track1[i][0], nextNoteTime );
-      this.gain1.gain.setValueAtTime( 0, nextNoteTime );
-      this.gain1.gain.linearRampToValueAtTime( 0.3, nextNoteTime + 0.001 );
-      this.gain1.gain.linearRampToValueAtTime( 0, nextNoteTime + 0.15 );
+      //this.osc1.frequency.setValueAtTime( this.track1[i][0], thisNoteTime );
+      this.gain1.gain.setValueAtTime( 0, thisNoteTime );
+      this.gain1.gain.linearRampToValueAtTime( 1, thisNoteTime + this.noteFadeInOut );
+      this.gain1.gain.setValueAtTime( 1, thisNoteTime + noteDuration - this.noteFadeInOut );
+      this.gain1.gain.linearRampToValueAtTime( 0, thisNoteTime + noteDuration );
       noteBufferSource[i].connect( this.gain1 );
 
-      noteBufferSource[i].start( nextNoteTime );
+      noteBufferSource[i].start( thisNoteTime );
 
-      nextNoteTime += this.deltaTime * this.track1[i][1];
-      console.log(noteBufferSource[i].buffer.getChannelData(0));
+      thisNoteTime += this.deltaTime * this.track1[i][1];
+      // console.log(p1);
     }
 
-    nextNoteTime = loadTime;
+    thisNoteTime = loadTime;
 
     this.kck = [];
     this.kckGain = [];
@@ -59,18 +89,18 @@ export default class Sequencer {
       this.kck[i].type = 'sawtooth';
       this.kck[i].connect( this.kckGain[i] );
       this.kckGain[i].connect( this.aCtx.destination )
-      this.kck[i].frequency.setValueAtTime( this.trackKck[i][0], nextNoteTime );
-      this.kckGain[i].gain.setValueAtTime( 0, nextNoteTime );
-      this.kckGain[i].gain.linearRampToValueAtTime( 0.3, nextNoteTime + 0.001 );
-      this.kckGain[i].gain.linearRampToValueAtTime( 0, nextNoteTime + 0.15 );
-      this.kckGain[i].gain.linearRampToValueAtTime( 0.3, nextNoteTime + 0.30 );
-      this.kckGain[i].gain.linearRampToValueAtTime( 0, nextNoteTime + 0.35 );
-      this.kck[i].start( nextNoteTime );
-      this.kck[i].stop( nextNoteTime + 0.35);
+      this.kck[i].frequency.setValueAtTime( this.trackKck[i][0], thisNoteTime );
+      this.kckGain[i].gain.setValueAtTime( 0, thisNoteTime );
+      this.kckGain[i].gain.linearRampToValueAtTime( 0.3, thisNoteTime + 0.001 );
+      this.kckGain[i].gain.linearRampToValueAtTime( 0, thisNoteTime + 0.15 );
+      this.kckGain[i].gain.linearRampToValueAtTime( 0.3, thisNoteTime + 0.30 );
+      this.kckGain[i].gain.linearRampToValueAtTime( 0, thisNoteTime + 0.35 );
+      this.kck[i].start( thisNoteTime );
+      this.kck[i].stop( thisNoteTime + 0.35);
 
-      nextNoteTime += this.deltaTime * this.trackKck[i][1];
+      thisNoteTime += this.deltaTime * this.trackKck[i][1];
     }
-    this.totalTime = nextNoteTime;
+    this.totalTime = thisNoteTime;
   }
 
   update() {
